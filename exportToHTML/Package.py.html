@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Package.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Package.py</font>
+</center></td></tr></table>
+<pre><span class="s0"># File to hold the Package class</span>
+
+<span class="s2">import </span><span class="s1">csv</span>
+<span class="s2">from </span><span class="s1">datetime </span><span class="s2">import </span><span class="s1">datetime</span><span class="s3">,</span><span class="s1">timedelta</span>
+
+
+<span class="s2">class </span><span class="s1">Package</span><span class="s3">:</span>
+    <span class="s2">def </span><span class="s1">__init__</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">package_table </span><span class="s3">= [[]</span><span class="s2">for </span><span class="s1">_ </span><span class="s2">in </span><span class="s1">range</span><span class="s3">(</span><span class="s4">40</span><span class="s3">)] </span><span class="s0"># Table to hold all 40 packages</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">load_packages</span><span class="s3">()</span>
+
+    <span class="s2">def </span><span class="s1">package_hash</span><span class="s3">(</span><span class="s1">self</span><span class="s3">,</span><span class="s1">package_id</span><span class="s3">):</span>
+        <span class="s2">return </span><span class="s1">package_id </span><span class="s3">% </span><span class="s4">40</span>
+    <span class="s0"># Adds the data from the WGUPS Package file into the program and then adds that package into the hash table </span>
+    <span class="s2">def </span><span class="s1">insert</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">package_id</span><span class="s3">, </span><span class="s1">address</span><span class="s3">, </span><span class="s1">deadline</span><span class="s3">, </span><span class="s1">city</span><span class="s3">, </span><span class="s1">zip_code</span><span class="s3">, </span><span class="s1">weight</span><span class="s3">, </span><span class="s1">status</span><span class="s3">, </span><span class="s1">notes</span><span class="s3">=</span><span class="s5">&quot;&quot;</span><span class="s3">):</span>
+        <span class="s1">index </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">package_hash</span><span class="s3">(</span><span class="s1">package_id</span><span class="s3">)</span>
+        <span class="s1">package_data </span><span class="s3">= {</span>
+            <span class="s5">&quot;id&quot;</span><span class="s3">: </span><span class="s1">package_id</span><span class="s3">,</span>
+            <span class="s5">&quot;address&quot;</span><span class="s3">: </span><span class="s1">address</span><span class="s3">,</span>
+            <span class="s5">&quot;deadline&quot;</span><span class="s3">: </span><span class="s1">deadline</span><span class="s3">,</span>
+            <span class="s5">&quot;city&quot;</span><span class="s3">: </span><span class="s1">city</span><span class="s3">,</span>
+            <span class="s5">&quot;zip&quot;</span><span class="s3">: </span><span class="s1">zip_code</span><span class="s3">,</span>
+            <span class="s5">&quot;weight&quot;</span><span class="s3">: </span><span class="s1">weight</span><span class="s3">,</span>
+            <span class="s5">&quot;status&quot;</span><span class="s3">: </span><span class="s1">status</span><span class="s3">,</span>
+            <span class="s5">&quot;delivery_time&quot;</span><span class="s3">: </span><span class="s2">None</span><span class="s3">,  </span><span class="s0"># Will be set when delivered</span>
+            <span class="s5">&quot;notes&quot;</span><span class="s3">: </span><span class="s1">notes</span>
+
+        <span class="s3">}</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">package_table</span><span class="s3">[</span><span class="s1">index</span><span class="s3">].</span><span class="s1">append</span><span class="s3">(</span><span class="s1">package_data</span><span class="s3">)</span>
+
+    <span class="s2">def </span><span class="s1">update_status</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">package_id</span><span class="s3">, </span><span class="s1">status</span><span class="s3">, </span><span class="s1">delivery_time</span><span class="s3">=</span><span class="s2">None</span><span class="s3">):</span>
+        <span class="s1">package </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">lookup</span><span class="s3">(</span><span class="s1">package_id</span><span class="s3">)</span>
+        <span class="s2">if </span><span class="s1">package</span><span class="s3">:</span>
+            <span class="s1">package</span><span class="s3">[</span><span class="s5">&quot;status&quot;</span><span class="s3">] = </span><span class="s1">status</span>
+            <span class="s2">if </span><span class="s1">delivery_time</span><span class="s3">:</span>
+                <span class="s1">package</span><span class="s3">[</span><span class="s5">&quot;delivery_time&quot;</span><span class="s3">] = </span><span class="s1">delivery_time</span>
+
+    <span class="s0"># Part of the requirement. Returns a package based on its ID. </span>
+    <span class="s2">def </span><span class="s1">lookup</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">package_id</span><span class="s3">):</span>
+        <span class="s1">index </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">package_hash</span><span class="s3">(</span><span class="s1">package_id</span><span class="s3">)</span>
+        <span class="s2">for </span><span class="s1">package </span><span class="s2">in </span><span class="s1">self</span><span class="s3">.</span><span class="s1">package_table</span><span class="s3">[</span><span class="s1">index</span><span class="s3">]:</span>
+            <span class="s2">if </span><span class="s1">package</span><span class="s3">[</span><span class="s5">&quot;id&quot;</span><span class="s3">] == </span><span class="s1">package_id</span><span class="s3">:</span>
+                <span class="s2">return </span><span class="s1">package</span>
+        <span class="s2">return None</span>
+
+    <span class="s2">def </span><span class="s1">load_packages</span><span class="s3">(</span><span class="s1">self</span><span class="s3">): </span><span class="s0"># Called when Package is initialized</span>
+        <span class="s2">with </span><span class="s1">open</span><span class="s3">(</span><span class="s5">&quot;packages.csv&quot;</span><span class="s3">, </span><span class="s5">&quot;r&quot;</span><span class="s3">) </span><span class="s2">as </span><span class="s1">csvfile</span><span class="s3">:</span>
+            <span class="s1">reader </span><span class="s3">= </span><span class="s1">csv</span><span class="s3">.</span><span class="s1">DictReader</span><span class="s3">(</span><span class="s1">csvfile</span><span class="s3">)</span>
+            <span class="s2">for </span><span class="s1">row </span><span class="s2">in </span><span class="s1">reader</span><span class="s3">:</span>
+                <span class="s1">package_id </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;id&quot;</span><span class="s3">])</span>
+                <span class="s1">address </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;address&quot;</span><span class="s3">].</span><span class="s1">strip</span><span class="s3">()</span>
+                <span class="s1">city </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;city&quot;</span><span class="s3">]</span>
+                <span class="s1">zip_code </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;zip&quot;</span><span class="s3">]</span>
+                <span class="s1">deadline </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;deadline&quot;</span><span class="s3">] </span><span class="s2">if </span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;deadline&quot;</span><span class="s3">]  != </span><span class="s5">&quot;EOD&quot; </span><span class="s2">else </span><span class="s5">&quot;5:00 PM&quot;</span>
+                <span class="s1">weight </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;weight&quot;</span><span class="s3">])</span>
+                <span class="s1">notes </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">&quot;notes&quot;</span><span class="s3">] </span><span class="s2">if </span><span class="s5">&quot;notes&quot; </span><span class="s2">in </span><span class="s1">row </span><span class="s2">else </span><span class="s5">&quot;&quot;</span>
+                <span class="s1">self</span><span class="s3">.</span><span class="s1">insert</span><span class="s3">(</span><span class="s1">package_id</span><span class="s3">, </span><span class="s1">address</span><span class="s3">, </span><span class="s1">deadline</span><span class="s3">, </span><span class="s1">city</span><span class="s3">, </span><span class="s1">zip_code</span><span class="s3">, </span><span class="s1">weight</span><span class="s3">, </span><span class="s5">&quot;At Hub&quot;</span><span class="s3">, </span><span class="s1">notes</span><span class="s3">)</span>
+    <span class="s0"># Returns every package</span>
+    <span class="s2">def </span><span class="s1">get_all_packages</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):</span>
+        <span class="s1">all_packages </span><span class="s3">= []</span>
+        <span class="s2">for </span><span class="s1">bucket </span><span class="s2">in </span><span class="s1">self</span><span class="s3">.</span><span class="s1">package_table</span><span class="s3">:</span>
+            <span class="s1">all_packages</span><span class="s3">.</span><span class="s1">extend</span><span class="s3">(</span><span class="s1">bucket</span><span class="s3">)</span>
+        <span class="s2">return </span><span class="s1">all_packages</span>
+
+
+
+</pre>
+</body>
+</html>

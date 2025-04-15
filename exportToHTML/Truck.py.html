@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>Truck.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Truck.py</font>
+</center></td></tr></table>
+<pre><span class="s0">#File to hold the Truck package</span>
+
+<span class="s2">import </span><span class="s1">csv</span>
+<span class="s2">from </span><span class="s1">datetime </span><span class="s2">import </span><span class="s1">datetime</span><span class="s3">,</span><span class="s1">timedelta</span>
+
+<span class="s1">hub </span><span class="s3">= </span><span class="s4">&quot;4001 South 700 East&quot; </span><span class="s0">#holds the Hub address as a separate variable</span>
+
+<span class="s2">class </span><span class="s1">Truck</span><span class="s3">:</span>
+    <span class="s2">def </span><span class="s1">__init__</span><span class="s3">(</span><span class="s1">self</span><span class="s3">,</span><span class="s1">truck_id</span><span class="s3">, </span><span class="s1">departure_time</span><span class="s3">):</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">truck_id </span><span class="s3">= </span><span class="s1">truck_id</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">packages </span><span class="s3">= []</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">distances </span><span class="s3">= {}</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">departure_time </span><span class="s3">= </span><span class="s1">departure_time</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">total_distance </span><span class="s3">= </span><span class="s5">0</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">speed </span><span class="s3">= </span><span class="s5">18</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">current_time </span><span class="s3">= </span><span class="s1">departure_time</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">current_address </span><span class="s3">= </span><span class="s1">hub</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">load_distances</span><span class="s3">()</span>
+
+    <span class="s2">def </span><span class="s1">load_distances</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):   </span><span class="s0">#Called when the Truck is initialized</span>
+        <span class="s2">with </span><span class="s1">open</span><span class="s3">(</span><span class="s4">&quot;distances.csv&quot;</span><span class="s3">, </span><span class="s4">&quot;r&quot;</span><span class="s3">) </span><span class="s2">as </span><span class="s1">csvfile</span><span class="s3">:</span>
+            <span class="s1">reader </span><span class="s3">= </span><span class="s1">csv</span><span class="s3">.</span><span class="s1">reader</span><span class="s3">(</span><span class="s1">csvfile</span><span class="s3">)</span>
+            <span class="s1">headers </span><span class="s3">= </span><span class="s1">next</span><span class="s3">(</span><span class="s1">reader</span><span class="s3">)</span>
+            <span class="s1">column_address </span><span class="s3">= [</span><span class="s1">addr</span><span class="s3">.</span><span class="s1">strip</span><span class="s3">() </span><span class="s2">for </span><span class="s1">addr </span><span class="s2">in </span><span class="s1">headers</span><span class="s3">[</span><span class="s5">1</span><span class="s3">:]] </span><span class="s0">#Remove spaces from the addresses</span>
+            <span class="s2">for </span><span class="s1">row </span><span class="s2">in </span><span class="s1">reader</span><span class="s3">:</span><span class="s0"># The code reads in the addresses from the first row and column and uses the pairs as tuple-keys to lookup the distance</span>
+                <span class="s1">row_address </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">0</span><span class="s3">].</span><span class="s1">strip</span><span class="s3">()</span>
+                <span class="s1">distances_list </span><span class="s3">= </span><span class="s1">row</span><span class="s3">[</span><span class="s5">1</span><span class="s3">:]</span>
+                <span class="s2">for </span><span class="s1">col_address</span><span class="s3">, </span><span class="s1">distance </span><span class="s2">in </span><span class="s1">zip</span><span class="s3">(</span><span class="s1">column_address</span><span class="s3">, </span><span class="s1">distances_list</span><span class="s3">):</span>
+                    <span class="s1">self</span><span class="s3">.</span><span class="s1">distances</span><span class="s3">[(</span><span class="s1">row_address</span><span class="s3">, </span><span class="s1">col_address</span><span class="s3">)] = </span><span class="s1">float</span><span class="s3">(</span><span class="s1">distance</span><span class="s3">.</span><span class="s1">strip</span><span class="s3">())</span>
+
+
+    <span class="s2">def </span><span class="s1">add_package</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">package_id</span><span class="s3">):</span>
+        <span class="s2">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">packages</span><span class="s3">) &lt; </span><span class="s5">16</span><span class="s3">:</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">packages</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s1">package_id</span><span class="s3">)</span>
+        <span class="s2">else</span><span class="s3">:</span>
+            <span class="s2">raise </span><span class="s1">ValueError</span><span class="s3">(</span><span class="s4">f&quot;Truck </span><span class="s2">{</span><span class="s1">self</span><span class="s3">.</span><span class="s1">truck_id</span><span class="s2">} </span><span class="s4">is full&quot; </span><span class="s3">)</span>
+
+    <span class="s2">def </span><span class="s1">deliver_packages</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">package_manager</span><span class="s3">): </span><span class="s0"># The Nearest-Neighbor algorithm</span>
+        <span class="s2">while </span><span class="s1">self</span><span class="s3">.</span><span class="s1">packages</span><span class="s3">:</span>
+            <span class="s1">min_distance </span><span class="s3">= </span><span class="s1">float</span><span class="s3">(</span><span class="s4">&quot;inf&quot;</span><span class="s3">)</span>
+            <span class="s1">next_package </span><span class="s3">= </span><span class="s2">None</span>
+            <span class="s1">next_address </span><span class="s3">= </span><span class="s2">None</span>
+
+            <span class="s2">for </span><span class="s1">package_id </span><span class="s2">in </span><span class="s1">self</span><span class="s3">.</span><span class="s1">packages</span><span class="s3">:</span><span class="s0"># Loop through the packages and use the addresses as tuple keys to find the distances</span>
+                <span class="s1">package </span><span class="s3">= </span><span class="s1">package_manager</span><span class="s3">.</span><span class="s1">lookup</span><span class="s3">(</span><span class="s1">package_id</span><span class="s3">)</span>
+                <span class="s1">address </span><span class="s3">= </span><span class="s1">package</span><span class="s3">[</span><span class="s4">&quot;address&quot;</span><span class="s3">]</span>
+                <span class="s2">if </span><span class="s1">package_id </span><span class="s3">== </span><span class="s5">9 </span><span class="s2">and </span><span class="s1">self</span><span class="s3">.</span><span class="s1">current_time </span><span class="s3">&lt; </span><span class="s1">datetime</span><span class="s3">.</span><span class="s1">strptime</span><span class="s3">(</span><span class="s4">&quot;10:20 AM&quot;</span><span class="s3">, </span><span class="s4">&quot;%I:%M %p&quot;</span><span class="s3">):</span>
+                    <span class="s1">address </span><span class="s3">= </span><span class="s4">&quot;300 State St&quot;</span>
+                <span class="s1">distance </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">distances</span><span class="s3">[(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">current_address</span><span class="s3">),(</span><span class="s1">address</span><span class="s3">)]</span>
+                <span class="s2">if </span><span class="s1">distance </span><span class="s3">&lt; </span><span class="s1">min_distance</span><span class="s3">: </span><span class="s0"># Updates the next address if the package it is looking up is closer than the current nearest package</span>
+                    <span class="s1">min_distance </span><span class="s3">= </span><span class="s1">distance</span>
+                    <span class="s1">next_package </span><span class="s3">= </span><span class="s1">package_id</span>
+                    <span class="s1">next_address </span><span class="s3">= </span><span class="s1">address</span>
+
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">total_distance </span><span class="s3">+= </span><span class="s1">min_distance </span><span class="s0"># Adds all the minimum distances to find the total distance</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">current_address </span><span class="s3">= </span><span class="s1">next_address </span><span class="s0"># updates with the nearest address to the current one</span>
+            <span class="s1">time_traveled </span><span class="s3">= </span><span class="s1">timedelta</span><span class="s3">(</span><span class="s1">hours</span><span class="s3">=</span><span class="s1">min_distance </span><span class="s3">/ </span><span class="s1">self</span><span class="s3">.</span><span class="s1">speed</span><span class="s3">) </span><span class="s0"># Calulates the time to the next address</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">current_time </span><span class="s3">+= </span><span class="s1">time_traveled </span><span class="s0"># Totals the drive time to each location</span>
+
+            <span class="s0">#Updates Package #9 based on the time</span>
+            <span class="s2">if </span><span class="s1">next_package </span><span class="s3">== </span><span class="s5">9 </span><span class="s2">and </span><span class="s1">self</span><span class="s3">.</span><span class="s1">current_time </span><span class="s3">&gt;= </span><span class="s1">datetime</span><span class="s3">.</span><span class="s1">strptime</span><span class="s3">(</span><span class="s4">&quot;10:20 AM&quot;</span><span class="s3">, </span><span class="s4">&quot;%I:%M %p&quot;</span><span class="s3">):</span>
+                <span class="s1">package_manager</span><span class="s3">.</span><span class="s1">lookup</span><span class="s3">(</span><span class="s1">next_package</span><span class="s3">)[</span><span class="s4">&quot;address&quot;</span><span class="s3">] = </span><span class="s4">&quot;410 S State St&quot;</span>
+            <span class="s1">package_manager</span><span class="s3">.</span><span class="s1">update_status</span><span class="s3">(</span><span class="s1">next_package</span><span class="s3">, </span><span class="s4">&quot;delivered&quot;</span><span class="s3">, </span><span class="s1">self</span><span class="s3">.</span><span class="s1">current_time</span><span class="s3">)</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">packages</span><span class="s3">.</span><span class="s1">remove</span><span class="s3">(</span><span class="s1">next_package</span><span class="s3">) </span><span class="s0"># Remove packges already delivered</span>
+        <span class="s0"># Return to the Hub to tally the last time/distance</span>
+        <span class="s1">return_distance </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">distances</span><span class="s3">[(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">current_address</span><span class="s3">,</span><span class="s1">hub</span><span class="s3">)]</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">total_distance </span><span class="s3">+= </span><span class="s1">return_distance</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">current_time </span><span class="s3">+= </span><span class="s1">timedelta</span><span class="s3">(</span><span class="s1">hours</span><span class="s3">=</span><span class="s1">return_distance </span><span class="s3">/ </span><span class="s1">self</span><span class="s3">.</span><span class="s1">speed</span><span class="s3">)</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">current_address </span><span class="s3">= </span><span class="s1">hub</span>
+
+
+
+
+
+
+</pre>
+</body>
+</html>
