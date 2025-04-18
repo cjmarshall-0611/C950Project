@@ -31,6 +31,7 @@ def print_status(package_manager, time, trucks, package_id=None):
         departure_time = truck.departure_time if truck else None
 
         status_text = ""
+
         if delivery_time and delivery_time <= time:
             status_text = f"delivered at {delivery_time.strftime('%I:%M %p')}"
         elif departure_time and time >= departure_time and (not delivery_time or time < delivery_time):
@@ -38,8 +39,11 @@ def print_status(package_manager, time, trucks, package_id=None):
         else:
             status_text = "At hub"
 
-        print(f"Package {package_id}: {status_text}  Address: {address}  City: {city}  Zip: {zip_code}  Weight(kg): {weight}")
-        print(f"  Delivery time: {delivery_time.strftime('%I:%M %p')}  Deadline: {deadline}")
+        print(f"Package: {package_id}  Status: {status_text}  Address: {address}  City: {city}  Zip: {zip_code}  Weight(kg): {weight}  Deadline: {deadline}")
+        if status_text.startswith("delivered"):
+            print(f"  Delivery time: {delivery_time.strftime('%I:%M %p')}")
+        else:
+            print("  Delivery time: Not yet delivered")
 
     # Here the milage for all trucks is calculated and displayed each time a status is requested
     total_miles = sum(truck.total_distance for truck in trucks)
